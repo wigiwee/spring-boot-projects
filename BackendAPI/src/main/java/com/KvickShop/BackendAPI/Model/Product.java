@@ -1,10 +1,7 @@
 package com.KvickShop.BackendAPI.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,9 +24,15 @@ public class Product {
     private String brand;
     private BigDecimal price;
     private String category;
-    private Boolean available;
+    private Boolean productAvailable;
+    private int stockQuantity;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date releaseDate;
-    private int quantity;
+
+    private String imageName;
+    private String imageType;
+
+    @Lob                    //large object annotation
+    private byte[] imageData;
 }
