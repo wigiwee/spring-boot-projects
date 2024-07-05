@@ -56,7 +56,7 @@ const UpdateProduct = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     console.log("images", image)
-    console.log("product", updateProduct)
+    console.log("productsdfsfsf", updateProduct)
     const updatedProduct = new FormData();
     updatedProduct.append("imageFile", image);
     updatedProduct.append(
@@ -98,10 +98,10 @@ const UpdateProduct = () => {
   
 
   return (
-    <div className="update-product-container">
-      <div className="center-container">
+    <div className="update-product-container" >
+      <div className="center-container"style={{marginTop:"7rem"}}>
         <h1>Update Product</h1>
-        <form className="row g-3 pt-5" onSubmit={handleSubmit}>
+        <form className="row g-3 pt-1" onSubmit={handleSubmit}>
           <div className="col-md-6">
             <label className="form-label">
               <h6>Name</h6>
