@@ -4,6 +4,7 @@ import com.KvickShop.BackendAPI.Model.Product;
 import com.KvickShop.BackendAPI.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class ProductService {
     }
 
     public Product addProduct(Product product, MultipartFile imageFile) throws IOException {
-        product.setImageName(imageFile.getOriginalFilename());
+        product.setImageName(StringUtils.cleanPath(imageFile.getOriginalFilename()));
         product.setImageType(imageFile.getContentType());
         product.setImageData(imageFile.getBytes());
         return productRepo.save(product);
