@@ -1,11 +1,8 @@
 package com.elearn.app.elearn_bak.dtos;
 
-import com.elearn.app.elearn_bak.entities.Course;
+import lombok.Data;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-
+@Data
 public class VideoDto {
 
     private String videoId;
@@ -17,7 +14,5 @@ public class VideoDto {
     private String filePath;
 
     private String contentType;
-
-    private Course course;
 
 }

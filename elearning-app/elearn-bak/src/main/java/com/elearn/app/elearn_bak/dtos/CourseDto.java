@@ -4,13 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
@@ -32,4 +25,7 @@ public class CourseDto {
 
     private Date createdDate;
 
+    private List<VideoDto> videos = new ArrayList<>();
+
+    private List<CategoryDto> categoryList = new ArrayList<>();
 }

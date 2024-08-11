@@ -2,8 +2,6 @@
 
 import java.util.Date;
 
-import jakarta.persistence.Id;
-
 public class UserDto {
 
 
