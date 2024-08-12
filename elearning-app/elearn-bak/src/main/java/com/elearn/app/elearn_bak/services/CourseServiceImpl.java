@@ -38,8 +38,8 @@ public class CourseServiceImpl implements CourseService {
         List<CourseDto> courseDtos = courses
                 .stream()
                 .map(course -> entityToDto(course))
-                .collect(Collectors.toList()
-        );
+                .collect(Collectors.toList());
+
         return courseDtos;
     }
 
@@ -54,7 +54,7 @@ public class CourseServiceImpl implements CourseService {
         
         Course course = courseRepo.
             findById(courseId)
-            .orElseThrow(() -> new ResourceNotFoundException("Course not found")
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found !")
         );
         
     }

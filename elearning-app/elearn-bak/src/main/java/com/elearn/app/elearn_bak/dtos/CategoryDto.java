@@ -2,6 +2,8 @@ package com.elearn.app.elearn_bak.dtos;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Data
@@ -15,6 +17,7 @@ public class CategoryDto {
 
     private Date addedDate;
 
+    @JsonIgnore
     private String bannerPath;
 
 }
