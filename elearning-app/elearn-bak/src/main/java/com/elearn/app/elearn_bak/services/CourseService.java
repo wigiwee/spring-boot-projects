@@ -6,8 +6,11 @@ import java.util.List;
 
 public interface CourseService {
     
+    
     CourseDto create(CourseDto courseDto);
 
+    CourseDto getById(String courseId);
+    
     List<CourseDto> getAll();
 
     CourseDto update(CourseDto courseDto, String courseId);

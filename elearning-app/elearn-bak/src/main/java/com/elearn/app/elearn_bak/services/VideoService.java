@@ -8,6 +8,8 @@ public interface VideoService {
 
     List<VideoDto> getAll();
 
+    VideoDto getById(String videoId);
+    
     VideoDto create(VideoDto videoDto);
 
     VideoDto update(VideoDto videoDto, String videoId);

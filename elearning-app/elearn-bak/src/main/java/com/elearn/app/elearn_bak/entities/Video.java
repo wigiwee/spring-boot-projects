@@ -13,7 +13,7 @@ import lombok.Data;
 public class Video {
 
     @Id
-    private String videoId;
+    private String id;
 
     private String title;
 

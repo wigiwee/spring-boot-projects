@@ -32,6 +32,15 @@ public class CourseServiceImpl implements CourseService {
         return entityToDto(courseRepo.save(savedCourse));
     }
 
+
+    @Override
+    public CourseDto getById(String courseId) {
+        Course course = courseRepo
+            .findById(courseId)
+            .orElseThrow(() -> new ResourceNotFoundException("Course with given Id not found"));        
+        return entityToDto(course);
+    }
+
     @Override
     public List<CourseDto> getAll() {
         List<Course> courses = courseRepo.findAll();
@@ -45,8 +54,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto update(CourseDto courseDto, String courseId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        Course course = courseRepo
+            .findById(courseId)
+            .orElseThrow( ()-> new ResourceNotFoundException("Course with provided Id not found!"));
+        course.setTitle(courseDto.getId());
+        course.setShortDesc(courseDto.getShortDesc());
+        course.setLongDesc(courseDto.getLongDesc());
+        Course savedCourse = courseRepo.save(course);
+        return entityToDto(savedCourse);
     }
 
     @Override
@@ -54,15 +69,18 @@ public class CourseServiceImpl implements CourseService {
         
         Course course = courseRepo.
             findById(courseId)
-            .orElseThrow(() -> new ResourceNotFoundException("Course not found !")
-        );
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found !"));
+        courseRepo.delete(course);
         
     }
 
     @Override
     public List<CourseDto> searchByTitle(String keyword) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchByTitle'");
+        List<Course> courses = courseRepo.findByTitle(keyword);
+        return courses
+            .stream()
+            .map(course -> entityToDto(course))
+            .toList();            
     }
 
     //manually converting dto to entity 
@@ -93,4 +111,5 @@ public class CourseServiceImpl implements CourseService {
 
         return course;
     }
+
 }

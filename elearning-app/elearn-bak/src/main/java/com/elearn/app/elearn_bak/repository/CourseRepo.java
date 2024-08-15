@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface CourseRepo extends JpaRepository<Course, String> {
 
-    Optional<Course> findByTitle(String title);
+    List<Course> findByTitle(String title);
 
     List<Course> findByLive(boolean live);
 

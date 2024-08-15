@@ -12,7 +12,7 @@ import com.elearn.app.elearn_bak.entities.Video;
 @Repository
 public interface VideoRepo extends JpaRepository<Video, String> {
 
-    Optional<Video> findByTitle(String title);
+    List<Video> findByTitle(String title);
 
 
 }
