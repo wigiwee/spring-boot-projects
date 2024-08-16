@@ -11,7 +11,7 @@ public interface CourseService {
 
     CourseDto getById(String courseId);
     
-    List<CourseDto> getAll();
+    List<CourseDto> getAll(int pageNumber, int pageSize);
 
     CourseDto update(CourseDto courseDto, String courseId);
 

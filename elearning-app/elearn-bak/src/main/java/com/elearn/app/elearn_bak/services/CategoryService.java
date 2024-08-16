@@ -3,14 +3,15 @@ package com.elearn.app.elearn_bak.services;
 import java.util.List;
 
 import com.elearn.app.elearn_bak.dtos.CategoryDto;
+import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 
 public interface CategoryService {
 
-    List<CategoryDto> getAll();
+    CustomPageResponse<CategoryDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq);
 
     CategoryDto update(CategoryDto categoryDto, String categoryId);
 
-    CategoryDto create(CategoryDto categorydDto);
+    CategoryDto create(CategoryDto categoryDto);
 
     void delete(String categoryId);
 

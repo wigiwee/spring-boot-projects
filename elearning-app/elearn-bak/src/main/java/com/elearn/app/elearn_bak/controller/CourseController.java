@@ -1,8 +1,10 @@
 package com.elearn.app.elearn_bak.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomMessage;
 import com.elearn.app.elearn_bak.services.CourseServiceImpl;
@@ -30,8 +32,11 @@ public class CourseController {
     CourseServiceImpl courseService;
 
     @GetMapping
-    public List<CourseDto> getAll () {
-        return courseService.getAll();
+    public List<CourseDto> getAll (
+        @RequestParam(value="pageNumber", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER ) int pageNumber,
+        @RequestParam(value = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE ) int pageSize
+    ) {
+        return courseService.getAll(pageNumber, pageSize);
     }
 
     @GetMapping("{courseId}")

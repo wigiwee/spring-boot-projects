@@ -42,7 +42,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> getAll() {
+    public List<CourseDto> getAll(int pageNumber, int pageSize) {
         List<Course> courses = courseRepo.findAll();
         List<CourseDto> courseDtos = courses
                 .stream()
