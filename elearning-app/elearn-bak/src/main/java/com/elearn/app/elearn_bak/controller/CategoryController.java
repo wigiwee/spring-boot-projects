@@ -48,7 +48,7 @@ public class CategoryController {
             .body(categoryService.create(categoryDto));
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<CustomPageResponse<CategoryDto>> getAll ( 
         @RequestParam(value="pageNumber", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER ) int pageNumber,
         @RequestParam(value = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE ) int pageSize,

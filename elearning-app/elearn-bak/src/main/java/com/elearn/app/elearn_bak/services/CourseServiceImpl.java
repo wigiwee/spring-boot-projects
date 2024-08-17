@@ -1,15 +1,19 @@
 package com.elearn.app.elearn_bak.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.elearn.app.elearn_bak.dtos.CategoryDto;
 import com.elearn.app.elearn_bak.dtos.CourseDto;
+import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.entities.Course;
 import com.elearn.app.elearn_bak.exception.ResourceNotFoundException;
 import com.elearn.app.elearn_bak.repository.CourseRepo;
@@ -42,14 +46,39 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> getAll(int pageNumber, int pageSize) {
-        List<Course> courses = courseRepo.findAll();
+    public CustomPageResponse<CourseDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq) {
+
+        if(pageNumber <= 0 ) {
+            return null;
+        }
+
+        Sort sort;
+        if(sortSeq.equals("descending")){
+            sort = Sort.by(sortBy).descending();
+        }else{
+            sort = Sort.by(sortBy).ascending();
+        }
+        
+        PageRequest pageRequest = PageRequest.of(pageNumber -1 , pageSize, sort);
+
+        Page<Course> coursePage = courseRepo.findAll(pageRequest);
+        List<Course> courses = coursePage.getContent();
+
+
         List<CourseDto> courseDtos = courses
                 .stream()
                 .map(course -> entityToDto(course))
                 .collect(Collectors.toList());
 
-        return courseDtos;
+        CustomPageResponse<CourseDto> customPageResponse = new CustomPageResponse<>();
+        customPageResponse.setPageNumber(pageNumber);
+        customPageResponse.setPageSize(pageSize);
+        customPageResponse.setTotalPages(coursePage.getTotalPages());
+        customPageResponse.setTotalElements(coursePage.getTotalElements());
+        customPageResponse.setContent(courseDtos);
+        customPageResponse.setLast(coursePage.isLast());
+        
+        return customPageResponse;
     }
 
     @Override

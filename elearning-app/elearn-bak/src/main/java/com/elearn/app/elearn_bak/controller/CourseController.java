@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomMessage;
+import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.services.CourseServiceImpl;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
 @RestController
 @RequestMapping("/api/v1/courses")          //specifying versioning of the api      //endpoint must be plural
 public class CourseController {
@@ -32,11 +30,15 @@ public class CourseController {
     CourseServiceImpl courseService;
 
     @GetMapping
-    public List<CourseDto> getAll (
+    public ResponseEntity<CustomPageResponse<CourseDto>> getAll (
         @RequestParam(value="pageNumber", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER ) int pageNumber,
-        @RequestParam(value = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE ) int pageSize
-    ) {
-        return courseService.getAll(pageNumber, pageSize);
+        @RequestParam(value = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE ) int pageSize,
+        @RequestParam(value = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY ) String sortBy, 
+        @RequestParam(value = "sortSeq", required = false, defaultValue = AppConstants.DEFAULT_SORT_SEQUENCE ) String sortSeq) {
+
+        System.out.println("---------------------");
+        System.out.println(sortBy);
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.getAll(pageNumber, pageSize, sortBy, sortSeq));
     }
 
     @GetMapping("{courseId}")
@@ -44,8 +46,8 @@ public class CourseController {
         return courseService.getById(courseId);
     }
     
-    @PostMapping("{courseId}")
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto newCourse) {
+    @PostMapping
+    public ResponseEntity<CourseDto> createCourse( @Valid @RequestBody CourseDto newCourse) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(courseService.create(newCourse));

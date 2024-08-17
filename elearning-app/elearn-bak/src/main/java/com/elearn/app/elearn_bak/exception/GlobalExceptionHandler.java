@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
 
     }
 
+    //handling dto object not valid exception
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException exception){
 

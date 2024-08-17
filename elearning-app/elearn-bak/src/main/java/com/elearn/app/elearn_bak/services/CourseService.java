@@ -1,6 +1,7 @@
 package com.elearn.app.elearn_bak.services;
 
 import com.elearn.app.elearn_bak.dtos.CourseDto;
+import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface CourseService {
 
     CourseDto getById(String courseId);
     
-    List<CourseDto> getAll(int pageNumber, int pageSize);
+    CustomPageResponse<CourseDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq);
 
     CourseDto update(CourseDto courseDto, String courseId);
 

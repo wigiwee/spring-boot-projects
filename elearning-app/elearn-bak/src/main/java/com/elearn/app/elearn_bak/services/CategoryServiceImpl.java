@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
         // List<Category> categories = categoryRepo.findAll();
 
         if(pageNumber ==0){
-            return null;
+            
         }
         pageNumber = pageNumber -1;     //by default pageNumber starts from 0 we want it start from 1
         Sort sort;
