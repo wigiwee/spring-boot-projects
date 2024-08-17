@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -35,7 +34,7 @@ public class Course {
 
     private Date createdDate;
 
-     @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course")
     private List<Video> videos = new ArrayList<>();
 
     @ManyToMany

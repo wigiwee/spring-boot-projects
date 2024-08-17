@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CustomPageResponse<CategoryDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq) {
         // List<Category> categories = categoryRepo.findAll();
-
+        
         if(pageNumber ==0){
             
         }
