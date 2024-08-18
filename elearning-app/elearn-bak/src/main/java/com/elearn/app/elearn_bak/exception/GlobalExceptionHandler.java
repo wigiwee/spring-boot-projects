@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -34,6 +35,12 @@ public class GlobalExceptionHandler {
 
         exception.getBindingResult().getAllErrors().forEach( error -> {
             String fieldName = ((FieldError)error).getField();
+            
+// (FieldError)error:
+// This part casts the error object from ObjectError to FieldError.
+// The cast is necessary because ObjectError is a general type that could represent different kinds of errors, 
+// but in this context, we specifically need to work with FieldError, which represents an error on a specific field of an object.
+
             String errorMessage= error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });

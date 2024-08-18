@@ -6,7 +6,7 @@ import com.elearn.app.elearn_bak.dtos.VideoDto;
 
 public interface VideoService {
 
-    List<VideoDto> getAll();
+    List<VideoDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq);
 
     VideoDto getById(String videoId);
     

@@ -31,11 +31,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CustomPageResponse<CategoryDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq) {
         // List<Category> categories = categoryRepo.findAll();
-        
+
         if(pageNumber ==0){
             
         }
-        pageNumber = pageNumber -1;     //by default pageNumber starts from 0 we want it start from 1
         Sort sort;
         if( sortSeq.equals( "descending" )){
             sort = Sort.by(sortBy).descending();
@@ -43,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
             sort = Sort.by(sortBy).ascending();
         }
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize, sort);
 
 
         Page<Category> categoryPage = categoryRepo.findAll(pageRequest);
@@ -58,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
         customPageResponse.setContent(categoryDto);
         customPageResponse.setTotalElements(categoryPage.getTotalElements());
         customPageResponse.setTotalPages(categoryPage.getTotalPages());
-        customPageResponse.setPageNumber(pageNumber +1);
+        customPageResponse.setPageNumber(pageNumber);
         customPageResponse.setPageSize(pageSize);
         customPageResponse.setLast(categoryPage.isLast());
         return customPageResponse;

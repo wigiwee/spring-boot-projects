@@ -1,9 +1,12 @@
 package com.elearn.app.elearn_bak.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.dtos.CustomMessage;
+import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.dtos.VideoDto;
 import com.elearn.app.elearn_bak.services.VideoServiceImpl;
 
@@ -18,10 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
-
 @RestController
 @RequestMapping("/api/v1/videos")
 public class VideoController {
@@ -29,8 +28,13 @@ public class VideoController {
     private VideoServiceImpl videoService;
 
     @GetMapping
-    public List<VideoDto> getAll() {
-        return videoService.getAll();
+    public CustomPageResponse<VideoDto> getAll(
+        @RequestParam(value="pageNumber", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER ) int pageNumber,
+        @RequestParam(value = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE ) int pageSize,
+        @RequestParam(value = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY) String sortBy,
+        @RequestParam(value = "sortSeq", required = true, defaultValue = AppConstants.DEFAULT_SORT_SEQUENCE) String sortSeq) {
+
+        return videoService.getAll(pageNumber, pageSize, sortBy, sortSeq);
     }
     
     @GetMapping("/{videoId}")
@@ -38,7 +42,7 @@ public class VideoController {
         return videoService.getById(videoId);
     }
 
-    @PostMapping("/{videoId}")
+    @PostMapping
     public ResponseEntity<VideoDto> createVideo (@RequestBody VideoDto newVideo ) {
         return ResponseEntity
             .status(HttpStatus.CREATED)

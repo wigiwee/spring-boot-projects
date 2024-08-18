@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.dtos.VideoDto;
 import com.elearn.app.elearn_bak.entities.Video;
 import com.elearn.app.elearn_bak.exception.ResourceNotFoundException;
@@ -23,12 +27,37 @@ public class VideoServiceImpl implements VideoService {
         this.modelMapper = modelMapper;
     }
     @Override
-    public List<VideoDto> getAll() {
-        List<Video> videos = videoRepo.findAll();
-        return videos
+    public CustomPageResponse<VideoDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq) {
+        if(pageNumber <= 0){
+            // throw new InvalidRequestParameterException();
+            return null;
+        }
+        Sort sort;
+
+        if(sortSeq.equals("descending")){
+            sort = Sort.by(sortBy).descending();
+        }else{
+            sort = Sort.by(sortBy).ascending();
+        }
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Video> videoPage = videoRepo.findAll(pageRequest);
+
+        List<Video> videos = videoPage.getContent();
+
+        List<VideoDto> videoDtos = videos
             .stream()
             .map( video -> entityToDto(video))
             .toList();
+        CustomPageResponse<VideoDto> customPageResponse = new CustomPageResponse<>();
+        customPageResponse.setPageNumber(pageNumber);
+        customPageResponse.setPageSize(pageSize);
+        customPageResponse.setTotalElements(videoPage.getTotalElements());
+        customPageResponse.setTotalPages(videoPage.getTotalPages());
+        customPageResponse.setContent(videoDtos);
+        customPageResponse.setLast(videoPage.isLast());
+        
+        return customPageResponse;
     }
 
     @Override
