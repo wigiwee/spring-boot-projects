@@ -1,6 +1,8 @@
 package com.elearn.app.elearn_bak.services;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto create(CourseDto courseDto) {
+        courseDto.setId(UUID.randomUUID().toString());
+        courseDto.setCreatedDate(new Date());
         Course savedCourse = dtoToEntity(courseDto);
         return entityToDto(courseRepo.save(savedCourse));
     }

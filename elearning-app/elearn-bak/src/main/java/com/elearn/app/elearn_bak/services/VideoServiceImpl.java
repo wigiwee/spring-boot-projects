@@ -40,7 +40,7 @@ public class VideoServiceImpl implements VideoService {
             sort = Sort.by(sortBy).ascending();
         }
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize, sort);
         Page<Video> videoPage = videoRepo.findAll(pageRequest);
 
         List<Video> videos = videoPage.getContent();

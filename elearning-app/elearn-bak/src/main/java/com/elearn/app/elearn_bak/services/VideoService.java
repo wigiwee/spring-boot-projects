@@ -2,11 +2,12 @@ package com.elearn.app.elearn_bak.services;
 
 import java.util.List;
 
+import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.dtos.VideoDto;
 
 public interface VideoService {
 
-    List<VideoDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq);
+    CustomPageResponse<VideoDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq);
 
     VideoDto getById(String videoId);
     

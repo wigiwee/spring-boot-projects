@@ -11,22 +11,32 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.elearn.app.elearn_bak.dtos.CategoryDto;
+import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.entities.Category;
+import com.elearn.app.elearn_bak.entities.Course;
 import com.elearn.app.elearn_bak.exception.ResourceNotFoundException;
 import com.elearn.app.elearn_bak.repository.CategoryRepo;
+import com.elearn.app.elearn_bak.repository.CourseRepo;
+
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor     //to enable constructor injection
 public class CategoryServiceImpl implements CategoryService {
 
     private CategoryRepo categoryRepo;
 
+    private CourseRepo courseRepo;
+
     private ModelMapper modelMapper;
 
-    public CategoryServiceImpl(CategoryRepo categoryRepo, ModelMapper modelMapper){
-        this.categoryRepo = categoryRepo;
-        this.modelMapper = modelMapper;
-    }
+    private CourseServiceImpl courseService;    
+    // public CategoryServiceImpl(CategoryRepo categoryRepo, ModelMapper modelMapper){
+    //     this.categoryRepo = categoryRepo;
+    //     this.modelMapper = modelMapper;
+    // }
 
     @Override
     public CustomPageResponse<CategoryDto> getAll(int pageNumber, int pageSize, String sortBy, String sortSeq) {
@@ -87,6 +97,38 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
+    public void addCourseToCategory(String catId, String courseId) {
+        Category category = categoryRepo
+            .findById(catId)
+            .orElseThrow(() -> new ResourceNotFoundException("Category with provided id found"));
+
+        Course  course = courseRepo
+            .findById(courseId)
+            .orElseThrow(() -> new ResourceNotFoundException("Course with provided id not found"));
+
+        category.addCourse(course);
+
+        categoryRepo.save(category);    //enabling cascade all will ensure that after saving the category the course will be updated too
+        System.out.println("Category relationship updated");
+        
+    }
+    
+    @Override
+    public List<CourseDto> getCoursesOfCategory(String categoryId) {
+        Category category = categoryRepo
+            .findById(categoryId)
+            .orElseThrow(()-> new ResourceNotFoundException("Category with given id not found"));
+
+        List<Course> courses = category.getCourses();
+
+        return courses
+            .stream()
+            .map(course ->courseService.entityToDto(course))
+            .toList();
+    }
+
+    @Override
     public void delete(String categoryId) {
         Category category = categoryRepo
             .findById(categoryId)
@@ -94,7 +136,6 @@ public class CategoryServiceImpl implements CategoryService {
 
             categoryRepo.delete(category);
     }
-
 
     public CategoryDto findById(String catId) {
         Category category = categoryRepo.findById(catId).orElseThrow( ()-> new ResourceNotFoundException("Category not found"));

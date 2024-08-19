@@ -3,6 +3,7 @@ package com.elearn.app.elearn_bak.services;
 import java.util.List;
 
 import com.elearn.app.elearn_bak.dtos.CategoryDto;
+import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 
 public interface CategoryService {
@@ -17,6 +18,9 @@ public interface CategoryService {
 
     List<CategoryDto> searchByTitle(String keyword);
 
+    public void addCourseToCategory(String catId, String courseId);
+
+    public List<CourseDto> getCoursesOfCategory(String categoryId);
 
 
 }

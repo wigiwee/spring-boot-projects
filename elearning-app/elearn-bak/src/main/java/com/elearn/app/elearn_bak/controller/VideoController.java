@@ -10,8 +10,11 @@ import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.dtos.VideoDto;
 import com.elearn.app.elearn_bak.services.VideoServiceImpl;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/api/v1/videos")
 public class VideoController {
     
+    @Autowired
     private VideoServiceImpl videoService;
 
     @GetMapping
@@ -43,19 +47,20 @@ public class VideoController {
     }
 
     @PostMapping
-    public ResponseEntity<VideoDto> createVideo (@RequestBody VideoDto newVideo ) {
+    public ResponseEntity<VideoDto> createVideo (@Valid @RequestBody VideoDto newVideo ) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(videoService.create(newVideo));
     }
 
     @PutMapping("{videoId}")
-    public VideoDto updateVideo (@PathVariable String videoId, VideoDto updatedVideo) {
+    public VideoDto updateVideo (@PathVariable String videoId, @Valid @RequestBody VideoDto updatedVideo) {
         return videoService.update(updatedVideo, videoId);
     }
 
-    @DeleteMapping("/{courseId}")
+    @DeleteMapping("/{videoId}")
     public ResponseEntity<CustomMessage> deleteVideo(@PathVariable String videoId){
+        videoService.delete(videoId);
         CustomMessage customMessage = new CustomMessage();
         customMessage.setMessage("video deleted");
         customMessage.setSuccess(true);

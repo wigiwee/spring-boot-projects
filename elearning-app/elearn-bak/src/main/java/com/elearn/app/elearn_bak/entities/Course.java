@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -40,4 +41,13 @@ public class Course {
     @ManyToMany
     private List<Category> categoryList = new ArrayList<>();
 
+    public void addCategory(Category category){
+        this.categoryList.add(category);
+        category.getCourses().add(this);
+    }
+
+    public void removeCategory(Category category){
+        this.categoryList.remove(category);
+        category.getCourses().remove(this);
+    }
 }
