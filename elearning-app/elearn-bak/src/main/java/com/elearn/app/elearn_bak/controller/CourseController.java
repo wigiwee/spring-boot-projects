@@ -3,14 +3,20 @@ package com.elearn.app.elearn_bak.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomMessage;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.services.CourseServiceImpl;
+import com.elearn.app.elearn_bak.services.FileService;
+import com.elearn.app.elearn_bak.services.FileServiceImpl;
 
 import jakarta.validation.Valid;
+import lombok.Value;
+
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,7 +42,6 @@ public class CourseController {
         @RequestParam(value = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY ) String sortBy, 
         @RequestParam(value = "sortSeq", required = false, defaultValue = AppConstants.DEFAULT_SORT_SEQUENCE ) String sortSeq) {
 
-        System.out.println("---------------------");
         System.out.println(sortBy);
         return ResponseEntity.status(HttpStatus.OK).body(courseService.getAll(pageNumber, pageSize, sortBy, sortSeq));
     }
@@ -67,4 +72,13 @@ public class CourseController {
             .status(HttpStatus.OK)
             .body(customMessage);
     }
+
+    //image upload api
+    @PostMapping("/{courseId}/banner")
+    public ResponseEntity<CourseDto> uploadBanner(
+        @PathVariable String courseId,
+        @RequestParam("banner") MultipartFile banner) throws IOException {
+        
+        return ResponseEntity.ok(courseService.saveBanner(banner, courseId));
+    }    
 }

@@ -33,6 +33,8 @@ public class CourseDto {
 
     private Date createdDate;
 
+    private String banner;
+    
     private List<VideoDto> videos = new ArrayList<>();
 
     private List<CategoryDto> categoryList = new ArrayList<>();

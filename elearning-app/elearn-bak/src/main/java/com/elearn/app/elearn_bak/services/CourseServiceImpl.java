@@ -1,5 +1,6 @@
 package com.elearn.app.elearn_bak.services;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.dtos.CategoryDto;
 import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
@@ -26,6 +29,8 @@ public class CourseServiceImpl implements CourseService {
     private CourseRepo courseRepo;
     
     private ModelMapper modelMapper;
+
+    private FileService fileService; 
 
     public CourseServiceImpl(CourseRepo courseRepo, ModelMapper modelMapper){
         this.courseRepo = courseRepo;
@@ -143,6 +148,19 @@ public class CourseServiceImpl implements CourseService {
         //do this for the rest of the fields
 
         return course;
+    }
+
+    @Override
+    public CourseDto saveBanner(MultipartFile file, String courseId) throws IOException {
+
+        Course course = courseRepo.findById(courseId)
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        
+        String filePath = fileService.save(file, AppConstants.DEFAULT_BANNER_UPLOAD_DIR, file.getOriginalFilename());
+        course.setBanner(filePath);
+        Course savedCourse = courseRepo.save(course);
+        
+        return entityToDto(savedCourse);
     }
 
 }

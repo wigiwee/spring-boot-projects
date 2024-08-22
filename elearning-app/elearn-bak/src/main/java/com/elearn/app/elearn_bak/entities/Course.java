@@ -33,6 +33,8 @@ public class Course {
 
     private double discount;
 
+    private String banner;
+    
     private Date createdDate;
 
     @OneToMany(mappedBy = "course")
