@@ -2,6 +2,7 @@ package com.elearn.app.elearn_bak.services;
 
 import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
+import com.elearn.app.elearn_bak.dtos.ResourceContentType;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,5 +24,9 @@ public interface CourseService {
 
     List<CourseDto> searchByTitle(String keyword);
 
-    public CourseDto saveBanner(MultipartFile file, String courseId) throws IOException;
+    CourseDto saveBanner(MultipartFile file, String courseId) throws IOException;
+
+    ResourceContentType getCourseBannerById(String courseId);
+
+
 }

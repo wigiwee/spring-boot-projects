@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,6 +23,7 @@ import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.dtos.CategoryDto;
 import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
+import com.elearn.app.elearn_bak.dtos.ResourceContentType;
 import com.elearn.app.elearn_bak.entities.Course;
 import com.elearn.app.elearn_bak.exception.ResourceNotFoundException;
 import com.elearn.app.elearn_bak.repository.CourseRepo;
@@ -30,11 +35,12 @@ public class CourseServiceImpl implements CourseService {
     
     private ModelMapper modelMapper;
 
-    private FileService fileService; 
+    private FileServiceImpl fileService; 
 
-    public CourseServiceImpl(CourseRepo courseRepo, ModelMapper modelMapper){
+    public CourseServiceImpl(CourseRepo courseRepo, ModelMapper modelMapper, FileServiceImpl fileService){
         this.courseRepo = courseRepo;
         this.modelMapper = modelMapper;
+        this.fileService = fileService;
     }
 
     @Override
@@ -158,9 +164,23 @@ public class CourseServiceImpl implements CourseService {
         
         String filePath = fileService.save(file, AppConstants.DEFAULT_BANNER_UPLOAD_DIR, file.getOriginalFilename());
         course.setBanner(filePath);
+        course.setBannerContentType(file.getContentType());
         Course savedCourse = courseRepo.save(course);
         
         return entityToDto(savedCourse);
+    }
+
+    public ResourceContentType getCourseBannerById(String courseId) {
+        Course course = courseRepo.findById(courseId)
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        
+        String bannerPath = course.getBanner();
+        Path path = Paths.get(bannerPath);
+        Resource resource = new FileSystemResource(path);
+        ResourceContentType resourceContentType = new ResourceContentType();
+        resourceContentType.setResource(resource);
+        resourceContentType.setContentType(course.getBannerContentType());
+        return resourceContentType;
     }
 
 }

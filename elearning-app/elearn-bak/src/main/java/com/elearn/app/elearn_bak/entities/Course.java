@@ -35,6 +35,8 @@ public class Course {
 
     private String banner;
     
+    private String bannerContentType;
+    
     private Date createdDate;
 
     @OneToMany(mappedBy = "course")

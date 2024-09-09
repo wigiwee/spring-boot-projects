@@ -27,7 +27,6 @@ public class FileServiceImpl implements FileService {
 
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        System.out.println(filePath.toString());
         return filePath.toString();
 
     }
