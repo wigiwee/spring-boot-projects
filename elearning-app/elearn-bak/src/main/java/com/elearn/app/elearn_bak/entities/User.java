@@ -1,7 +1,9 @@
 package com.elearn.app.elearn_bak.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Entity
+@Table(name = "app_users")
 public class User {
 
     @Id
@@ -19,6 +22,7 @@ public class User {
 
     private String name;
 
+    @Column(unique = true)
     private String email;
 
     private String phoneNumber;
