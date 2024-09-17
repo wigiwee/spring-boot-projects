@@ -13,4 +13,8 @@ public class AppConstants {
     public static final String DEFAULT_SORT_SEQUENCE = "ascending";
 
     public static final String DEFAULT_BANNER_UPLOAD_DIR = "uploads" + File.separator + "courses" + File.separator + "banners";
+
+    public static final String ROLE_ADMIN = "ADMIN";
+
+    public static final String ROLE_GUEST = "GUEST";
 }

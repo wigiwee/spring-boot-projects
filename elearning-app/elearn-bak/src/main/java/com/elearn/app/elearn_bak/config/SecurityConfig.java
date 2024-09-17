@@ -54,16 +54,31 @@ public class SecurityConfig {
         //customization of the security filter chain
  
         //routes 
-        httpSecurity
-            .authorizeHttpRequests( auth-> {
-            // auth.requestMatchers(HttpMethod.GET,"/api/v1/categories/**").permitAll();
-            auth.requestMatchers(HttpMethod.GET,"/api/v1/courses/**").permitAll();
-            auth.requestMatchers("/client-login").permitAll();
-            auth.requestMatchers("/client-login-process").permitAll();
-            auth.requestMatchers("/login").permitAll();
+        // httpSecurity
+        //     .authorizeHttpRequests( auth-> {
+        //     auth.requestMatchers(HttpMethod.GET,"/api/v1/categories/**").permitAll();
+        //     auth.requestMatchers(HttpMethod.GET,"/api/v1/courses/**").permitAll();
+        //     auth.requestMatchers("/client-login").permitAll();
+        //     auth.requestMatchers("/client-login-process").permitAll();
+        //     auth.requestMatchers("/login").permitAll();
+        //     auth.requestMatchers("/api/v1/users").permitAll();
+        //     auth.anyRequest().authenticated();
+        // });
+        httpSecurity.cors(e -> e.disable());
+        httpSecurity.csrf(e -> e.disable());
+        
+
+        httpSecurity.authorizeHttpRequests(auth -> {
+
+            auth.requestMatchers(HttpMethod.GET,"/api/v1/**").hasAnyRole(AppConstants.ROLE_GUEST, AppConstants.ROLE_ADMIN)
+                .requestMatchers("/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+                .requestMatchers(HttpMethod.POST,"/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+                .requestMatchers(HttpMethod.PUT,"/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+                .requestMatchers(HttpMethod.DELETE,"/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+                .anyRequest()
+                .authenticated();
 
         });
-        
         // enables basic authentication
         httpSecurity.httpBasic(Customizer.withDefaults());
 

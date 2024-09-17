@@ -27,9 +27,9 @@ class ElearnBakApplicationTests {
 	void contextLoads() {
 		User user = new User();
 		user.setUserId(UUID.randomUUID().toString());
-		user.setName("kaustubh");
-		user.setEmail("kaustubh@app.com");
-		user.setPassword((passwordEncoder.encode("password")));
+		user.setName("admin");
+ 		user.setEmail("admin@app.com");
+		user.setPassword((passwordEncoder.encode("admin")));
 		user.setActive(true);
 		user.setCreatedAt(new Date());
 		user.setEmailVerified(true);
@@ -57,8 +57,8 @@ class ElearnBakApplicationTests {
 		role1.setRoleId(UUID.randomUUID().toString());
 		role2.setRoleId(UUID.randomUUID().toString());
 
-		role1.setRoleName("ROLE_GUEST");
-		role2.setRoleName("ROLE_ADMIN");
+		role1.setRoleName("GUEST");
+		role2.setRoleName("ADMIN");
 		
 		repo.save(role1);
 		repo.save(role2);

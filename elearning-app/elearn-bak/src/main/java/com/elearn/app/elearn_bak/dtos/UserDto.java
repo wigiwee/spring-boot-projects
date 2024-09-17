@@ -1,6 +1,9 @@
  package com.elearn.app.elearn_bak.dtos;
 
 import java.util.Date;
+import java.util.Set;
+
+import com.elearn.app.elearn_bak.entities.Role;
 
 import lombok.Data;
 
@@ -30,4 +33,5 @@ public class UserDto {
 
     private String recentOTP;
 
+    private Set<Role> roles;
 }

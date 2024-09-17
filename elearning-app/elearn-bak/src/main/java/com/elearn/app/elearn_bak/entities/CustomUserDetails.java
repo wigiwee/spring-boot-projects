@@ -1,8 +1,13 @@
 package com.elearn.app.elearn_bak.entities;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
@@ -13,9 +18,19 @@ import lombok.Setter;
 public class CustomUserDetails implements UserDetails {
 
     private User user;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+
+        Set<Role> roles = user.getRoles();
+    
+        Set<SimpleGrantedAuthority> roleAuthorities = roles
+            .stream()
+            .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+            .collect(Collectors.toSet());
+            
+        System.out.println(roleAuthorities.toString());
+        return roleAuthorities;
     }
 
     @Override
@@ -46,8 +61,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
-
+        return user.isActive();
     }
 
 }
