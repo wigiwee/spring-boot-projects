@@ -44,7 +44,6 @@ class ElearnBakApplicationTests {
 
 	@Test
 	void testing(){
-		categoryService.addCourseToCategory("fb6b15b1-b4a1-4b36-8c3e-d7e5cb20dd97","5d77782f-095b-413b-b8c9-6cec640c1497");
 	}
 	
 	@Autowired
