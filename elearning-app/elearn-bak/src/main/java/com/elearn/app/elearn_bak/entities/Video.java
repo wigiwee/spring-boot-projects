@@ -1,10 +1,6 @@
 package com.elearn.app.elearn_bak.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -18,7 +14,7 @@ public class Video {
     private String title;
 
     @Column(name = "description",
-        length = 1000   )
+            length = 1000)
     private String desc;
 
     private String filePath;

@@ -1,15 +1,14 @@
 package com.elearn.app.elearn_bak.services;
 
+import com.elearn.app.elearn_bak.entities.CustomUserDetails;
+import com.elearn.app.elearn_bak.entities.User;
+import com.elearn.app.elearn_bak.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import com.elearn.app.elearn_bak.entities.CustomUserDetails;
-import com.elearn.app.elearn_bak.entities.User;
-import com.elearn.app.elearn_bak.repository.UserRepo;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -28,5 +27,4 @@ public class CustomUserDetailService implements UserDetailsService {
     }
 
 
-    
 }

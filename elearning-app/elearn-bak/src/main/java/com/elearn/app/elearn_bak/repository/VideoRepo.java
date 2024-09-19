@@ -1,11 +1,10 @@
 package com.elearn.app.elearn_bak.repository;
 
-import java.util.List;
-
+import com.elearn.app.elearn_bak.entities.Video;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.elearn.app.elearn_bak.entities.Video;
+import java.util.List;
 
 @Repository
 public interface VideoRepo extends JpaRepository<Video, String> {

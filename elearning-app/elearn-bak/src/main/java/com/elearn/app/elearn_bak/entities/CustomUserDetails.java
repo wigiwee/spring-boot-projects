@@ -1,15 +1,14 @@
 package com.elearn.app.elearn_bak.entities;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -21,12 +20,12 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         Set<Role> roles = user.getRoles();
-    
+
         Set<SimpleGrantedAuthority> roleAuthorities = roles
-            .stream()
-            .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-            .collect(Collectors.toSet());
-            
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .collect(Collectors.toSet());
+
         System.out.println(roleAuthorities.toString());
         return roleAuthorities;
     }

@@ -1,12 +1,6 @@
 package com.elearn.app.elearn_bak.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -35,7 +29,7 @@ public class User {
 
     private String password;
 
-    private boolean active=false;
+    private boolean active = false;
 
     private boolean emailVerified = false;
 
@@ -47,15 +41,15 @@ public class User {
 
     private String recentOTP;
 
-    @ManyToMany(mappedBy = "users",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    public void assignRole(Role role){
+    public void assignRole(Role role) {
         this.roles.add(role);
         role.getUsers().add(this);
     }
 
-    public void removeRole(Role role){
+    public void removeRole(Role role) {
         this.roles.remove(role);
         role.getUsers().remove(this);
     }

@@ -1,11 +1,10 @@
- package com.elearn.app.elearn_bak.dtos;
+package com.elearn.app.elearn_bak.dtos;
+
+import com.elearn.app.elearn_bak.entities.Role;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.Set;
-
-import com.elearn.app.elearn_bak.entities.Role;
-
-import lombok.Data;
 
 @Data
 public class UserDto {
@@ -21,7 +20,7 @@ public class UserDto {
 
     private String password;
 
-    private boolean active=false;
+    private boolean active = false;
 
     private boolean emailVerified = false;
 

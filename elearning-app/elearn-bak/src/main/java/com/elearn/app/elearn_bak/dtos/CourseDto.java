@@ -1,16 +1,15 @@
 package com.elearn.app.elearn_bak.dtos;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Data
 public class CourseDto {
@@ -37,8 +36,8 @@ public class CourseDto {
     private double discount;
 
     @JsonFormat(
-        shape = JsonFormat.Shape.STRING, 
-        pattern = "yyyy-MM-dd", timezone = "GMT")    //to format the date    //will receive date in this format
+            shape = JsonFormat.Shape.STRING,
+            pattern = "yyyy-MM-dd", timezone = "GMT")    //to format the date    //will receive date in this format
     private Date createdDate;
 
     @JsonIgnore

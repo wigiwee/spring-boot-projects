@@ -1,8 +1,8 @@
-    package com.elearn.app.elearn_bak.dtos;
-
-import java.util.List;
+package com.elearn.app.elearn_bak.dtos;
 
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class CustomPageResponse<T> {
@@ -12,11 +12,11 @@ public class CustomPageResponse<T> {
     private int pageNumber;
 
     private long totalElements;
-    
+
     private boolean isLast;
-    
+
     private int totalPages;
 
     private List<T> content;
-    
+
 }
