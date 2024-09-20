@@ -1,5 +1,6 @@
 package com.elearn.app.elearn_bak;
 
+import com.elearn.app.elearn_bak.config.security.JwtUtil;
 import com.elearn.app.elearn_bak.entities.Role;
 import com.elearn.app.elearn_bak.entities.User;
 import com.elearn.app.elearn_bak.repository.RoleRepo;
@@ -63,5 +64,20 @@ class ElearnBakApplicationTests {
 
         repo.save(role1);
         repo.save(role2);
+    }
+
+    @Autowired private JwtUtil jwtUtil; 
+
+    @Test
+    public void test(){
+
+        System.out.println("testing jwt");
+
+        String token = jwtUtil.generateToken("Kaustubh");
+
+        System.out.println(token);
+
+        System.out.println(jwtUtil.validateToken(token, "Kaustubh"));
+        System.out.println(jwtUtil.extractUsername(token));
     }
 }
