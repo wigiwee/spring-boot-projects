@@ -26,36 +26,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @SuppressWarnings("unused")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
         String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Hello Auth header " + authorizationHeader);
         String username = null;
         String jwtToken = null;
-        if (jwtToken != null && authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwtToken = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwtToken);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() != null) {
+            System.out.println(username);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+                System.out.println(userDetails.getUsername());
                 if (jwtToken != null && jwtUtil.validateToken(jwtToken, userDetails.getUsername())) {
-
-                    //authentication to security
+                    // authentication to security
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
-                    authenticationToken.setDetails( new WebAuthenticationDetailsSource().buildDetails(request));
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
-        }else{
-            throw new AuthenticationException("Invalid token");
+        } else {
+            // throw new AuthenticationException("Invalid token");
         }
         filterChain.doFilter(request, response);
-
     }
 }

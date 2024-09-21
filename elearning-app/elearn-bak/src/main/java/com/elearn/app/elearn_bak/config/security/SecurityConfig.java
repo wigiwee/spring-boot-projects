@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +17,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.config.CustomAuthenticationEntryPoint;
+import com.elearn.app.elearn_bak.dtos.CustomMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class SecurityConfig {
@@ -22,32 +30,38 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthFilter;
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
     // @Bean
     // public UserDetailsService userDetailsService(){
 
-    //     // in memory user management
-    //     InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
+    // // in memory user management
+    // InMemoryUserDetailsManager userDetailsManager = new
+    // InMemoryUserDetailsManager();
 
-    //     //creating user
+    // //creating user
 
-    //     userDetailsManager.createUser(
-    //         User.withDefaultPasswordEncoder()
-    //         .username("abc")
-    //         .password("123")
-    //         .roles("USER")
-    //         .build()); 
+    // userDetailsManager.createUser(
+    // User.withDefaultPasswordEncoder()
+    // .username("abc")
+    // .password("123")
+    // .roles("USER")
+    // .build());
 
-    //     userDetailsManager.createUser(
-    //         User.withDefaultPasswordEncoder()
-    //         .username("admin")
-    //         .password("abc")
-    //         .roles("ADMIN")
-    //         .build());
+    // userDetailsManager.createUser(
+    // User.withDefaultPasswordEncoder()
+    // .username("admin")
+    // .password("abc")
+    // .roles("ADMIN")
+    // .build());
 
-    //     return userDetailsManager;
+    // return userDetailsManager;
 
     // }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,26 +71,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        //customization of the security filter chain
+        // customization of the security filter chain
 
-        //routes 
+        // routes
         // httpSecurity
-        //     .authorizeHttpRequests( auth-> {
-        //     auth.requestMatchers(HttpMethod.GET,"/api/v1/categories/**").permitAll();
-        //     auth.requestMatchers(HttpMethod.GET,"/api/v1/courses/**").permitAll();
-        //     auth.requestMatchers("/client-login").permitAll();
-        //     auth.requestMatchers("/client-login-process").permitAll();
-        //     auth.requestMatchers("/login").permitAll();
-        //     auth.requestMatchers("/api/v1/users").permitAll();
-        //     auth.anyRequest().authenticated();
+        // .authorizeHttpRequests( auth-> {
+        // auth.requestMatchers(HttpMethod.GET,"/api/v1/categories/**").permitAll();
+        // auth.requestMatchers(HttpMethod.GET,"/api/v1/courses/**").permitAll();
+        // auth.requestMatchers("/client-login").permitAll();
+        // auth.requestMatchers("/client-login-process").permitAll();
+        // auth.requestMatchers("/login").permitAll();
+        // auth.requestMatchers("/api/v1/users").permitAll();
+        // auth.anyRequest().authenticated();
         // });
         httpSecurity.cors(e -> e.disable());
         httpSecurity.csrf(e -> e.disable());
 
-
         httpSecurity.authorizeHttpRequests(auth -> {
 
-            auth.requestMatchers(HttpMethod.GET, "/api/v1/**").hasAnyRole(AppConstants.ROLE_GUEST, AppConstants.ROLE_ADMIN)
+            auth.requestMatchers(HttpMethod.GET, "/api/v1/**")
+                    .hasAnyRole(AppConstants.ROLE_GUEST, AppConstants.ROLE_ADMIN)
+                    .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
                     .requestMatchers(HttpMethod.POST, "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
                     .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
@@ -88,7 +103,8 @@ public class SecurityConfig {
         // enables basic authentication
         httpSecurity.httpBasic(auth -> auth.authenticationEntryPoint(customAuthenticationEntryPoint));
 
-        // httpSecurity.formLogin(Customizer.withDefaults());  //default configuration for form login
+        // httpSecurity.formLogin(Customizer.withDefaults()); //default configuration
+        // for form login
         httpSecurity.formLogin( // Customizer.withDefaults()
                 form -> {
                     // form.loginPage("/login");
@@ -98,13 +114,25 @@ public class SecurityConfig {
                     // form.successForwardUrl("/success");
                     // // form.loginProcessingUrl("/client-login");
                     // // form.loginProcessingUrl("/client-login-process");
-                }
+                });
+
+        httpSecurity.exceptionHandling(e -> e
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+                    CustomMessage customMessage = new CustomMessage();
+
+                    customMessage.setMessage("You don't have permission to access this resource ! "+ accessDeniedException.getMessage());
+                    customMessage.setSuccess(false);
+                    String jsonString = new ObjectMapper().writeValueAsString(customMessage);
+                    response.getWriter().write(jsonString);
+                })
         );
 
-        httpSecurity.exceptionHandling(e -> e.authenticationEntryPoint(customAuthenticationEntryPoint));
-
-
-        // httpSecurity.sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // httpSecurity.sessionManagement(e ->
+        // e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -30,7 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         CustomMessage customMessage = new CustomMessage();
         customMessage.setMessage("Invalid details " + authException.getMessage());
         customMessage.setSuccess(false);
-
+        authException.printStackTrace();
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(customMessage);
 

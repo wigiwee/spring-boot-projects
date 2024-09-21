@@ -1,6 +1,8 @@
 package com.elearn.app.elearn_bak.dtos;
 
 import com.elearn.app.elearn_bak.entities.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 import java.util.Date;
@@ -18,18 +20,23 @@ public class UserDto {
 
     private String phoneNumber;
 
+    @JsonIgnore
     private String password;
 
+    @JsonIgnore
     private boolean active = false;
 
+    @JsonIgnore
     private boolean emailVerified = false;
-
+    
+    @JsonIgnore
     private boolean smsVerified = false;
 
     private Date createdAt;
 
     private String profilePath;
 
+    @JsonIgnore
     private String recentOTP;
 
     private Set<Role> roles;
