@@ -1,5 +1,6 @@
 package com.elearn.app.elearn_bak.config.security;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.elearn.app.elearn_bak.config.AppConstants;
 import com.elearn.app.elearn_bak.config.CustomAuthenticationEntryPoint;
@@ -84,21 +87,44 @@ public class SecurityConfig {
         // auth.requestMatchers("/api/v1/users").permitAll();
         // auth.anyRequest().authenticated();
         // });
-        httpSecurity.cors(e -> e.disable());
+        // httpSecurity.cors(e -> e.disable());
+        // manually customizing cors
+        httpSecurity.cors(cors -> {
+            CorsConfiguration config = new CorsConfiguration();
+            //allowing single origin
+            // config.addAllowedOrigin("http://localhost:5173");
+
+            //allowing multiple origins
+            config.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:3000"));
+
+            config.addAllowedMethod("*");
+            config.addAllowedHeader("*");
+            config.setAllowCredentials(true);
+            config.setMaxAge(5 * 60L); // 5 minutes max age for preflight request (OPTIONS) to be cached by browser for future requests to same endpoint
+            UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
+            configurationSource.registerCorsConfiguration("/**", config);
+            cors.configurationSource(configurationSource);
+
+        });
+
         httpSecurity.csrf(e -> e.disable());
 
         httpSecurity.authorizeHttpRequests(auth -> {
 
-            auth.requestMatchers(HttpMethod.GET, "/api/v1/**")
-                    .hasAnyRole(AppConstants.ROLE_GUEST, AppConstants.ROLE_ADMIN)
-                    .requestMatchers("/api/v1/auth/**").permitAll()
-                    .requestMatchers("/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
-                    .requestMatchers(HttpMethod.POST, "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
-                    .anyRequest()
-                    .authenticated();
-
+            // auth.requestMatchers(HttpMethod.GET,
+            // "/api/v1/**").hasAnyRole(AppConstants.ROLE_GUEST, AppConstants.ROLE_ADMIN)
+            // .requestMatchers("/api/v1/categories/**").permitAll()
+            // .requestMatchers("/api/v1/auth/**").permitAll()
+            // .requestMatchers("/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+            // .requestMatchers(HttpMethod.POST,
+            // "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+            // .requestMatchers(HttpMethod.PUT,
+            // "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+            // .requestMatchers(HttpMethod.DELETE,
+            // "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
+            // .anyRequest()
+            // .authenticated();
+            auth.requestMatchers("/**").permitAll();
         });
         // enables basic authentication
         httpSecurity.httpBasic(auth -> auth.authenticationEntryPoint(customAuthenticationEntryPoint));
@@ -119,17 +145,17 @@ public class SecurityConfig {
         httpSecurity.exceptionHandling(e -> e
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
                     CustomMessage customMessage = new CustomMessage();
 
-                    customMessage.setMessage("You don't have permission to access this resource ! "+ accessDeniedException.getMessage());
+                    customMessage.setMessage("You don't have permission to access this resource ! "
+                            + accessDeniedException.getMessage());
                     customMessage.setSuccess(false);
                     String jsonString = new ObjectMapper().writeValueAsString(customMessage);
                     response.getWriter().write(jsonString);
-                })
-        );
+                }));
 
         // httpSecurity.sessionManagement(e ->
         // e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
