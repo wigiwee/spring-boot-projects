@@ -19,21 +19,20 @@ import com.elearn.app.elearn_bak.dtos.LoginRequest;
 import com.elearn.app.elearn_bak.entities.CustomUserDetails;
 import com.elearn.app.elearn_bak.services.UserServiceImpl;
 
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1/auth")
+@AllArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    UserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    JwtUtil jwtUtil;
 
-    @Autowired
-    private UserServiceImpl userService;
+    UserServiceImpl userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> createToken(
@@ -60,4 +59,10 @@ public class AuthController {
 
         return ResponseEntity.ok(jwtResponse);
     }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> RegisterNewUser(@RequestBody String entity) {
+        return null;
+    }
+    
 }

@@ -6,6 +6,8 @@ import com.elearn.app.elearn_bak.dtos.CourseDto;
 import com.elearn.app.elearn_bak.dtos.CustomMessage;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.services.CategoryServiceImpl;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.util.List;
 
 
 // @CrossOrigin(origins = "*", allowedHeaders = "*")
+@SecurityRequirement(name = "jwtScheme")    //setting up authentication scheme for swagger api, scheme created in ProjectConfiguration class
 @RestController
 @RequestMapping("/api/v1/categories")       //endpoint must be plural
 public class CategoryController {

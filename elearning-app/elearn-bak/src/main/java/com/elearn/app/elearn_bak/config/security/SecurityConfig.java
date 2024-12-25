@@ -75,40 +75,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         // customization of the security filter chain
-
-        // routes
-        // httpSecurity
-        // .authorizeHttpRequests( auth-> {
-        // auth.requestMatchers(HttpMethod.GET,"/api/v1/categories/**").permitAll();
-        // auth.requestMatchers(HttpMethod.GET,"/api/v1/courses/**").permitAll();
-        // auth.requestMatchers("/client-login").permitAll();
-        // auth.requestMatchers("/client-login-process").permitAll();
-        // auth.requestMatchers("/login").permitAll();
-        // auth.requestMatchers("/api/v1/users").permitAll();
-        // auth.anyRequest().authenticated();
-        // });
-        // httpSecurity.cors(e -> e.disable());
-        // manually customizing cors
         httpSecurity.cors(cors -> {
             CorsConfiguration config = new CorsConfiguration();
-            //allowing single origin
+            // allowing single origin
             // config.addAllowedOrigin("http://localhost:5173");
 
-            //allowing multiple origins
-            config.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:3000"));
+            // allowing multiple origins
+            config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000"));
 
-            config.addAllowedMethod("*");
+            // config.addAllowedMethod(HttpMethod.GET);
+            config.setAllowedMethods(List.of("GET", "POST"));
             config.addAllowedHeader("*");
             config.setAllowCredentials(true);
-            config.setMaxAge(5 * 60L); // 5 minutes max age for preflight request (OPTIONS) to be cached by browser for future requests to same endpoint
+            config.setMaxAge(5 * 60L); // 5 minutes max age for preflight request (OPTIONS) to be cached by browser for
+                                       // future requests to same endpoint
             UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
             configurationSource.registerCorsConfiguration("/**", config);
             cors.configurationSource(configurationSource);
-
         });
 
         httpSecurity.csrf(e -> e.disable());
 
+        // httpSecurity.authorizeHttpRequests(auth ->{
+        // auth.requestMatchers("/**").permitAll();
+        // });
         httpSecurity.authorizeHttpRequests(auth -> {
 
             // auth.requestMatchers(HttpMethod.GET,
@@ -124,7 +114,16 @@ public class SecurityConfig {
             // "/api/v1/**").hasRole(AppConstants.ROLE_ADMIN)
             // .anyRequest()
             // .authenticated();
-            auth.requestMatchers("/**").permitAll();
+            // auth.requestMatchers("/**").permitAll();
+            auth
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**","swagger-resources/**").permitAll()
+                    .requestMatchers("/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/**").hasAnyRole("ADMIN", "GUEST")
+                    .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole("ADMIN")
+                    .anyRequest()
+                    .authenticated();
         });
         // enables basic authentication
         httpSecurity.httpBasic(auth -> auth.authenticationEntryPoint(customAuthenticationEntryPoint));
@@ -157,8 +156,7 @@ public class SecurityConfig {
                     response.getWriter().write(jsonString);
                 }));
 
-        // httpSecurity.sessionManagement(e ->
-        // e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        httpSecurity.sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

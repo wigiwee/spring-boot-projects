@@ -6,6 +6,11 @@ import com.elearn.app.elearn_bak.dtos.CustomMessage;
 import com.elearn.app.elearn_bak.dtos.CustomPageResponse;
 import com.elearn.app.elearn_bak.dtos.ResourceContentType;
 import com.elearn.app.elearn_bak.services.CourseServiceImpl;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +31,7 @@ import java.io.IOException;
 // @CrossOrigin(origins = "localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST})      //allowing specific methods
 // @CrossOrigin(origins = "localhost:3000", allowedHeaders = {"Authorization", "Content-Type"})      //allowing specific headers
 @RestController
-@RequestMapping("/api/v1/courses")          //specifying versioning of the api      //endpoint must be plural
+@RequestMapping("/api/v1/courses") // specifying versioning of the api //endpoint must be plural
 public class CourseController {
 
     @Autowired
@@ -39,18 +44,26 @@ public class CourseController {
             @RequestParam(value = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY) String sortBy,
             @RequestParam(value = "sortSeq", required = false, defaultValue = AppConstants.DEFAULT_SORT_SEQUENCE) String sortSeq) {
 
-        System.out.println(sortBy);
         return ResponseEntity.status(HttpStatus.OK).body(courseService.getAll(pageNumber, pageSize, sortBy, sortSeq));
     }
 
-    @ResponseStatus(HttpStatus.OK)    //setting the status code
+    @ResponseStatus(HttpStatus.OK) // setting the status code
     @GetMapping("{courseId}")
     public CourseDto getCourse(@PathVariable String courseId) {
         return courseService.getById(courseId);
     }
 
+    @Operation( // this annotation is used to specify information about the endpoint which will
+                // be display in swagger api webpage
+            summary = "creates new course", description = "Create new course in the database", tags = {
+                    "creating entity", "creating course" } // tags are used to categorize endpoints
+    )
+    @ApiResponse(responseCode = "201", description = "Course created successfully") // swagger annotation to specify
+                                                                                    // response code and description
+    @ApiResponse(responseCode = "501", description = "course not created")
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@Valid @RequestBody CourseDto newCourse) {
+    public ResponseEntity<CourseDto> createCourse(
+            @Valid @Parameter(description = "used to describe parameter for endpoint") @RequestBody CourseDto newCourse) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(courseService.create(newCourse));
@@ -71,7 +84,7 @@ public class CourseController {
                 .body(customMessage);
     }
 
-    //image upload api
+    // image upload api
     @PostMapping("/{courseId}/banner")
     public ResponseEntity<?> uploadBanner(
             @PathVariable String courseId,
@@ -81,21 +94,21 @@ public class CourseController {
             HttpServletResponse response,
             HttpSession session) throws IOException {
 
-        //accessing request headers
+        // accessing request headers
 
         // System.out.println(request.getContextPath());
         // System.out.println(request.getPathInfo());
         // Enumeration<String> headerNames = request.getHeaderNames();
         // while(headerNames.hasMoreElements()) {
-        //     System.out.println(headerNames.nextElement() +" : " + request.getHeader(headerNames.nextElement()));
+        // System.out.println(headerNames.nextElement() +" : " +
+        // request.getHeader(headerNames.nextElement()));
         // }
 
         String contentType = banner.getContentType();
-        if (
-                banner.isEmpty() ||
-                        (!contentType.equals("image/png") &&
-                                !contentType.equals("image/jpg") &&
-                                !contentType.equals("image/jpeg"))) {
+        if (banner.isEmpty() ||
+                (!contentType.equals("image/png") &&
+                        !contentType.equals("image/jpg") &&
+                        !contentType.equals("image/jpeg"))) {
 
             return ResponseEntity.badRequest().body("provided file is invalid file");
         }

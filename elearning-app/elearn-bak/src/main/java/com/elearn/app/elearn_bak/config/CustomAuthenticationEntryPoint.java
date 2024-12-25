@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    //gets executed when unauthenticated use accesses authenticated resource
     @Override
     public void commence(
         

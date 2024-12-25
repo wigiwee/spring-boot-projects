@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor     //to enable constructor injection
+@AllArgsConstructor // to enable constructor injection
 public class CategoryServiceImpl implements CategoryService {
 
     private CategoryRepo categoryRepo;
@@ -31,9 +31,10 @@ public class CategoryServiceImpl implements CategoryService {
     private ModelMapper modelMapper;
 
     private CourseServiceImpl courseService;
-    // public CategoryServiceImpl(CategoryRepo categoryRepo, ModelMapper modelMapper){
-    //     this.categoryRepo = categoryRepo;
-    //     this.modelMapper = modelMapper;
+    // public CategoryServiceImpl(CategoryRepo categoryRepo, ModelMapper
+    // modelMapper){
+    // this.categoryRepo = categoryRepo;
+    // this.modelMapper = modelMapper;
     // }
 
     @Override
@@ -51,7 +52,6 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize, sort);
-
 
         Page<Category> categoryPage = categoryRepo.findAll(pageRequest);
         List<Category> categories = categoryPage.getContent();
@@ -74,7 +74,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto update(CategoryDto newCategory, String categoryId) {
-        Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        Category category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         category.setDesc(newCategory.getDesc());
         category.setTitle(newCategory.getTitle());
         Category savedCat = categoryRepo.save(category);
@@ -87,7 +88,7 @@ public class CategoryServiceImpl implements CategoryService {
         String catId = UUID.randomUUID().toString();
         categoryDto.setId(catId);
 
-        //date
+        // date
         categoryDto.setAddedDate(new Date());
         Category savedCategory = categoryRepo.save(dtoToEntity(categoryDto));
         return entityToDto(savedCategory);
@@ -107,7 +108,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.addCourse(course);
 
-        categoryRepo.save(category);    //enabling cascade all will ensure that after saving the category the course will be updated too
+        categoryRepo.save(category); // enabling cascade all will ensure that after saving the category the course
+                                     // will be updated too
         System.out.println("Category relationship updated");
 
     }
@@ -136,14 +138,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public CategoryDto findById(String catId) {
-        Category category = categoryRepo.findById(catId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        Category category = categoryRepo.findById(catId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         return entityToDto(category);
     }
 
     @Override
     public List<CategoryDto> searchByTitle(String keyword) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchByTitle'");
+        List<Category> categories = categoryRepo.findByTitle(keyword);
+        return categories.stream()
+                .map(category -> entityToDto(category))
+                .toList();
     }
 
     public CategoryDto entityToDto(Category category) {

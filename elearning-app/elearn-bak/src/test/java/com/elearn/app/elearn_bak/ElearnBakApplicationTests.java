@@ -39,12 +39,11 @@ class ElearnBakApplicationTests {
         user.setCreatedAt(new Date());
         user.setEmailVerified(true);
         // Role admin = repo.findByRoleName("ROLE_ADMIN").get();
-        Role guest = repo.findByRoleName("ROLE_GUEST").get();
+        Role guest = repo.findByRoleName("GUEST").get();
         user.assignRole(guest);
         // user.assignRole(admin);
 
         userRepo.save(user);
-
     }
 
     @Test
